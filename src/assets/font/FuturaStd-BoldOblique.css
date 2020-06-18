@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "FuturaStd-BoldOblique";
+  src: url("FuturaStd-BoldOblique.woff2") format("woff2"),
+       url("FuturaStd-BoldOblique.woff") format("woff"),
+       url("FuturaStd-BoldOblique.ttf") format("truetype"),
+       url("FuturaStd-BoldOblique.eot") format("embedded-opentype"),
+       url("FuturaStd-BoldOblique.svg") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
