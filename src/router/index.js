@@ -2,12 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Admin from '../views/Admin.vue'
-import AdminHome from '../views/AdminHome.vue'
-import EduAdminManage from '../views/EduAdminManage.vue'
-import AdminNoticeEdit from '../views/AdminNoticeEdit.vue'
-import AdminNoticeManage from '../views/AdminNoticeManage.vue'
-import AdminLog from '../views/AdminLog.vue'
-import AdminDBbackup from '../views/AdminDBbackup.vue'
+
 
 
 Vue.use(VueRouter)
@@ -26,7 +21,7 @@ Vue.use(VueRouter)
     children:[
       {
         path: 'home',
-        component: () => import('../views/AdminHome.vue'),
+        component: () => import('../components/Admin/AdminHome.vue'),
         meta: {
           title:"首页",
           order:"1",
@@ -34,7 +29,7 @@ Vue.use(VueRouter)
       },
       {
         path: 'eamanage',
-        component: () => import('../views/EduAdminManage.vue'),
+        component: () => import('../components/Admin/EduAdminManage.vue'),
         meta: {
           title:"教务管理",
           order:"2",
@@ -42,7 +37,7 @@ Vue.use(VueRouter)
         children:[
           {
             path: '',
-            component: () => import('../components/eaHome.vue'),
+            component: () => import('../components/Admin/eaHome.vue'),
             meta: {
               title:"教务管理首页",
               order:"2",
@@ -50,7 +45,7 @@ Vue.use(VueRouter)
           },
           {
             path: 'create',
-            component: () => import('../components/eaEdit.vue'),
+            component: () => import('../components/Admin/eaEdit.vue'),
             meta: {
               title:"新增教务",
               order:"2",
@@ -58,7 +53,7 @@ Vue.use(VueRouter)
           },
           {
             path: ':id',
-            component: () => import('../components/eaEdit.vue'),
+            component: () => import('../components/Admin/eaEdit.vue'),
             meta: {
               title:"教务信息更新",
               order:"2",
@@ -69,7 +64,7 @@ Vue.use(VueRouter)
       },
       {
         path: 'noticemanage/create',
-        component: () => import('../views/AdminNoticeEdit.vue'),
+        component: () => import('../components/Admin/AdminNoticeEdit.vue'),
         meta: {
           title:"发布公告",
           order:"3-1",
@@ -77,7 +72,7 @@ Vue.use(VueRouter)
       },
       {
         path: 'noticemanage',
-        component: () => import( '../views/AdminNoticeManage.vue'),
+        component: () => import( '../components/Admin/AdminNoticeManage.vue'),
         meta: {
           title:"公告管理",
           order:"3-2",
@@ -85,7 +80,7 @@ Vue.use(VueRouter)
       },
       {
         path: 'noticemanage/:id',
-        component: () => import( '../views/AdminNoticeEdit.vue'),
+        component: () => import( '../components/Admin/AdminNoticeEdit.vue'),
         meta: {
           title:"公告更新",
           order:"3-2",
@@ -93,7 +88,7 @@ Vue.use(VueRouter)
       },
       {
         path: 'log',
-        component: () => import( '../views/AdminLog.vue'),
+        component: () => import( '../components/Admin/AdminLog.vue'),
         meta: {
           title:"查看日志",
           order:"4",
@@ -101,7 +96,7 @@ Vue.use(VueRouter)
       },
       {
         path: 'backup',
-        component: () => import( '../views/AdminDBbackup.vue'),
+        component: () => import( '../components/Admin/AdminDBbackup.vue'),
         meta: {
           title:"数据库备份",
           order:"5",

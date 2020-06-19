@@ -22,6 +22,9 @@
         </Form> -->
 
         <Form :model="formItem" :label-width="100" :rules="ruleInline">
+            <FormItem label="教务名称" prop="name">
+                <Input v-model="formItem.name" placeholder="请输入教务名称"></Input>
+            </FormItem>
             <FormItem label="教务账号" prop="account">
                 <Input v-model="formItem.account" placeholder="请输入教务号"></Input>
             </FormItem>
@@ -103,6 +106,7 @@
             return {
                 
                 formItem: {
+                    name:'',
                     account: '',
                     passwd:'',
                     passwdCheck:'',
@@ -110,6 +114,9 @@
                     grade: '', 
                 },
                 ruleInline: {
+                    name: [
+                        { required: true, message: '教务用户名禁止为空', trigger: 'blur' }
+                    ],
                     account: [
                         { required: true, message: '教务账号禁止为空', trigger: 'blur' }
                     ],

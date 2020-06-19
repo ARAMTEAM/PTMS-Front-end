@@ -46,7 +46,7 @@ export default {
           title: "正在开启备份",
           desc:
             "检测到您正在开启备份，请完善相关设置，并点击[确认]按钮以后开启备份状态",
-          duration: 10
+          duration: 7
         });
       } else {
         this.visibility = "visibility:hidden";
@@ -55,7 +55,7 @@ export default {
           title: "正在关闭备份",
           desc:
             "检测到您正在关闭备份，若为误点击无需其他操作，如果意在关闭备份状态请点击[确认]按钮后生效",
-          duration: 10
+          duration: 7
         });
       }
     },

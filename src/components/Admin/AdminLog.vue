@@ -4,7 +4,11 @@
     <div class="LogForm">
         <i-table size="large" :columns="columns1" :data="data1"></i-table>
     </div>
-
+    <br/>
+        <!-- 分页 -->
+    <div class="page">
+      <Page :total="100" :page-size="5" show-total @on-change="search"/>
+    </div>
   </div>
 </template>
 

@@ -4,10 +4,42 @@
         <router-link to="/about">About</router-link>
     <router-view/>-->
     <Layout>
-      <Header :style="{background: '#fff'}">
-          <p>项目实训系统管理员</p>
+      <Header :style="{background: '#515A6E'}">
+        <div>
+          <img
+            src="../assets/logo_ptms.png"
+            style="
+                height:40px;
+                margin: 10px 0;float:left;"
+          />
+          <p
+            class="UncatchText"
+            style="height:40px;font-size:20px;margin: 10px 20px;color:#ffffff;float:left;line-height:45px;"
+          >项目实训系统管理员</p>
+          <div class="portraitContain">
+            <Avatar class="Portraits" :style="{background:'#f56a00',margin:'10px 20px',float:'right','line-height':'37px',}" size="large">王老师</Avatar>
+
+            <!-- 头像菜单 -->
+            <div style="background: #f8f8f9；display:flex;position:absolute;z-index:999;overflow: auto;right:5px;top:65px;transform:scale(01);border-radius:10px;border:1px solid #000;">
+                <Card title="管理员1" icon="ios-options" :padding="0" shadow style="width: 200px;">
+                    <CellGroup>
+                        <Cell title="管理员" label="欢迎回来，admin" />
+                        <Cell title="我的中心" to="/"/>
+                        <Cell title="退出登录" to="/components/badge">
+                            <Badge :count="10" slot="extra" />
+                        </Cell>
+                    </CellGroup>
+                </Card>
+            </div>
+
+          </div>
+          
+          
+        </div>
       </Header>
       <Layout>
+        
+
         <Sider
           collapsible
           :collapsed-width="78"
@@ -48,41 +80,14 @@
             </MenuItem>
             <MenuItem name="5" to="/admin/backup">
               <Icon type="ios-copy"></Icon>
-              <span>数据库备份</span>
+              <span>备份</span>
             </MenuItem>
           </Menu>
         </Sider>
 
-        <!-- <Sider  hide-trigger :style="{background: '#fff'}">
-                    <Menu :active-name="activeName" theme="light" width="auto" :open-names="opennames" :accordion="true">
-                        <MenuItem name="1" to="/admin/home">
-                                <Icon type="ios-home"></Icon>
-                                首页
-                        </MenuItem>
-                        <MenuItem name="2" to="/admin/eamanagement" >
-                                <Icon type="ios-keypad"></Icon>
-                                教务管理
-                        </MenuItem>
-                        <Submenu name="3">
-                            <template slot="title">
-                                <Icon type="ios-analytics"></Icon>
-                                公告通知
-                            </template>
-                            <MenuItem name="3-1" to="/admin/newnotice">发布公告</MenuItem>
-                            <MenuItem name="3-2" to="/admin/noticemanage">公告管理</MenuItem>
-                        </Submenu>
-                        <MenuItem name="4" to="/admin/log">
-                                <Icon type="ios-paper"></Icon>
-                                查看日志
-                        </MenuItem>
-                        <MenuItem name="5" to="/admin/backup">
-                                <Icon type="ios-copy"></Icon>
-                                数据库备份
-                        </MenuItem>
-                    </Menu>
-                    
-        </Sider>-->
         <Layout class="navContent" :style="{padding: '0 24px 24px'}">
+          
+
           <Breadcrumb :style="{margin: '12px 0'}"></Breadcrumb>
 
           <Content
@@ -160,6 +165,20 @@
   min-width: 700px;
   overflow: hidden;
 }
+.UncatchText {
+  -moz-user-select: none; /*火狐*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -ms-user-select: none; /*IE10*/
+  -khtml-user-select: none; /*早期浏览器*/
+  user-select: none;
+}
+.Portraits{
+
+}
+.Portraits:hover {
+
+}
+
 #footer {
   text-align: right;
 }
