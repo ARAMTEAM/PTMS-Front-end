@@ -9,7 +9,7 @@
 
       <div class="EAManage">
         <!-- 表格内容 -->
-        <Table stripe  border  highlight-row ref="currentRowTable" :columns="columns3" :data="data">
+        <Table stripe  border  highlight-row ref="currentRowTable" :columns="columns3" :data="eaData">
           <template slot-scope="{ row }" slot="name">
               <strong>{{ row.name }}</strong>
           </template>
@@ -24,10 +24,8 @@
       <br/>
         <!-- 分页 -->
         <div class="page">
-          <Page :total="100" :page-size="5" show-total @on-change="search"/>
+          <Page :total=total :page-size="10" show-total @on-change="page"/> 
         </div>
-
-      
     </div>
   </div>
   
@@ -36,20 +34,11 @@
 <script>
 
 export default {
+    
     data(){
       return {
-        data:[
-          {jiaowu_id:201100000001,jiaowu_dept:'软件学院',jiaowu_name:'崔老师',},
-          {jiaowu_id:201100000002,jiaowu_dept:'微电子学院',jiaowu_name:'王老师',},
-          {jiaowu_id:201100000003,jiaowu_dept:'马克思学院',jiaowu_name:'樊老师',},
-          {jiaowu_id:201100000004,jiaowu_dept:'电气工程学院',jiaowu_name:'周老师',},
-          {jiaowu_id:201100000005,jiaowu_dept:'数学学院',jiaowu_name:'田老师',},
-          {jiaowu_id:201100000006,jiaowu_dept:'物理学院',jiaowu_name:'秦老师',},
-          {jiaowu_id:201100000007,jiaowu_dept:'化工学院',jiaowu_name:'王老师',},
-          {jiaowu_id:201100000008,jiaowu_dept:'软件学院',jiaowu_name:'吴老师',},
-          {jiaowu_id:201100000009,jiaowu_dept:'文学院',jiaowu_name:'臧老师',},
-          {jiaowu_id:201100000010,jiaowu_dept:'外国语学院',jiaowu_name:'崔老师',},
-        ],
+        total: null,
+        eaData: [],
         columns3: [
           {
               type: 'index',
@@ -81,6 +70,14 @@ export default {
       
         }
     },
+    created(){
+      const _this = this;
+      axios.get('http://localhost:8181/api/ea/findAll/1').then(function (resp){
+        console.log(resp);
+        _this.eaData = resp.data.content;
+        _this.total = resp.data.totalElements; 
+      })
+    },
     methods: {
         handleClearCurrentRow () {
             this.$refs.currentRowTable.clearCurrentRow();
@@ -88,11 +85,11 @@ export default {
         show (index) {
             this.$Modal.info({
                 title: '教务信息',
-                content: `教务号：${this.data[index].jiaowu_id}<br>教务名称：${this.data[index].jiaowu_name}<br>教务机构：${this.data[index].jiaowu_dept}`
+                content: `教务号：${this.eaData[index].jiaowu_id}<br>登陆账号：${this.eaData[index].jiaowu_username}<br>教务名称：${this.eaData[index].jiaowu_name}<br>教务机构：${this.eaData[index].jiaowu_dept}<br>教务年级：${this.eaData[index].jiaowu_nianji}`
             })
         },
         remove (index) {
-            this.data6.splice(index, 1);
+
         },
         edit(index){
             
@@ -100,14 +97,17 @@ export default {
         create(){
             this.$router.push('eamanage/create')
         },
-        search(pageIndex) {
-            console.log(pageIndex)
+        page(currentPage) {
+            const _this = this
+            axios.get('http://localhost:8181/api/ea/findAll/'+currentPage).then(function (resp){
+              console.log(resp);
+              _this.eaData = resp.data.content;
+              _this.total = resp.data.totalElements; 
+            })
         }
     },
 
-    components:{
- 
-    }
+    
 }
 </script>
 

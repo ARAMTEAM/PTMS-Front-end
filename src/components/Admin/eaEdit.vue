@@ -25,8 +25,8 @@
             <FormItem label="教务名称" prop="name">
                 <Input v-model="formItem.name" placeholder="请输入教务名称"></Input>
             </FormItem>
-            <FormItem label="教务账号" prop="account">
-                <Input v-model="formItem.account" placeholder="请输入教务号"></Input>
+            <FormItem label="教务账号" prop="username">
+                <Input v-model="formItem.username" placeholder="请输入教务号"></Input>
             </FormItem>
             
             <FormItem label="教务密码" prop="passwd">
@@ -53,7 +53,8 @@
                 </RadioGroup>
             </FormItem>
 
-            <Button type="primary" class="button" icon="md-cloud-upload">提交</Button>
+            <Button type="primary" class="button" icon="md-cloud-upload"  @click="handleSubmit('formItem')">提交</Button>
+            <Button type="primary" class="button" icon="md-cloud-upload" @click="test">test</Button>
 
         </Form>
         </div>
@@ -107,7 +108,7 @@
                 
                 formItem: {
                     name:'',
-                    account: '',
+                    username: '',
                     passwd:'',
                     passwdCheck:'',
                     dept: '',
@@ -117,12 +118,8 @@
                     name: [
                         { required: true, message: '教务用户名禁止为空', trigger: 'blur' }
                     ],
-                    account: [
+                    username: [
                         { required: true, message: '教务账号禁止为空', trigger: 'blur' }
-                    ],
-                    password: [
-                        { required: true, message: '密码禁止为空', trigger: 'blur' },
-                        { type: 'string', min: 6, message: '密码长度不得少于6位', trigger: 'blur' }
                     ],
                     passwd: [
                         { required: true,validator: validatePass, trigger: 'blur' }
@@ -130,8 +127,11 @@
                     passwdCheck: [
                         { required: true,validator: validatePassCheck, trigger: 'blur' }
                     ],
-                    age: [
-                        { validator: validateAge, trigger: 'blur' }
+                    dept: [
+                        { required: false,message: '教务账号禁止为空', trigger: 'blur' }
+                    ],
+                    grade: [
+                        { required: false,message: '教务账号禁止为空', trigger: 'blur'  }
                     ],
                 },
                 CurrentYear:0,
@@ -150,10 +150,14 @@
             backTo(){
                 this.$router.go(-1);//返回上一层
             },
+            test(){
+                console.log(this.formItem);
+            },
         },
         created(){
             let date = new Date();
             this.CurrentYear = date.getFullYear();
+            console.log(this)
         },
 
     }
