@@ -5,58 +5,42 @@
         <Button class="button" @click="backTo" icon="ios-arrow-back">返回</Button>
         <div class="form">
 
-        <!-- <Form ref="formInline" :model="formInline" :rules="ruleInline" inline>
-            <FormItem prop="user">
-                <Input type="text" v-model="formInline.user" placeholder="Username">
-                    <Icon type="ios-person-outline" slot="prepend"></Icon>
-                </Input>
-            </FormItem>
-            <FormItem prop="password">
-                <Input type="password" v-model="formInline.password" placeholder="Password">
-                    <Icon type="ios-lock-outline" slot="prepend"></Icon>
-                </Input>
-            </FormItem>
-            <FormItem>
-                <Button type="primary" @click="handleSubmit('formInline')">Signin</Button>
-            </FormItem>
-        </Form> -->
+            <Form ref="eaForm" :model="formItem" :label-width="100" :rules="ruleInline" >
+                <FormItem label="教务名称" prop="name">
+                    <Input v-model="formItem.name" placeholder="请输入教务名称"></Input>
+                </FormItem>
+                <FormItem label="教务账号" prop="username">
+                    <Input v-model="formItem.username" placeholder="请输入教务号"></Input>
+                </FormItem>
+                
+                <FormItem label="教务密码" prop="passwd">
+                    <Input type="password" password v-model="formItem.passwd" placeholder="请输入密码"></Input>
+                </FormItem>
+                <FormItem label="再次确认" prop="passwdCheck" >
+                    <Input type="password" password v-model="formItem.passwdCheck" placeholder="请再次输入密码"></Input>
+                </FormItem>
 
-        <Form :model="formItem" :label-width="100" :rules="ruleInline">
-            <FormItem label="教务名称" prop="name">
-                <Input v-model="formItem.name" placeholder="请输入教务名称"></Input>
-            </FormItem>
-            <FormItem label="教务账号" prop="username">
-                <Input v-model="formItem.username" placeholder="请输入教务号"></Input>
-            </FormItem>
-            
-            <FormItem label="教务密码" prop="passwd">
-                <Input type="password" password v-model="formItem.passwd" placeholder="请输入密码"></Input>
-            </FormItem>
-            <FormItem label="再次确认" prop="passwdCheck" >
-                <Input type="password" password v-model="formItem.passwdCheck" placeholder="请再次输入密码"></Input>
-            </FormItem>
+                <FormItem label="所属学院">
+                    <Select v-model="formItem.dept">
+                        <Option value="微电子学院">微电子学院</Option>
+                        <Option value="软件学院">软件学院</Option>
+                    </Select>
+                </FormItem>
 
-            <FormItem label="所属学院">
-                <Select v-model="formItem.dept">
-                    <Option value="微电子学院">微电子学院</Option>
-                    <Option value="软件学院">软件学院</Option>
-                </Select>
-            </FormItem>
+                <FormItem label="教务年级">
+                    <RadioGroup v-model="formItem.grade">
+                        <Radio :label="CurrentYear"></Radio>
+                        <Radio :label="CurrentYear-1"></Radio>
+                        <Radio :label="CurrentYear-2"></Radio>
+                        <Radio :label="CurrentYear-3"></Radio>
+                        <Radio :label="CurrentYear-4"></Radio>
+                    </RadioGroup>
+                </FormItem>
 
-            <FormItem label="教务年级">
-                <RadioGroup v-model="formItem.grade">
-                    <Radio :label="CurrentYear"></Radio>
-                    <Radio :label="CurrentYear-1"></Radio>
-                    <Radio :label="CurrentYear-2"></Radio>
-                    <Radio :label="CurrentYear-3"></Radio>
-                    <Radio :label="CurrentYear-4"></Radio>
-                </RadioGroup>
-            </FormItem>
+                <Button type="primary" class="button" icon="md-cloud-upload"  @click="handleSubmit('eaForm')">提交</Button>
+                <Button type="primary" class="button" icon="md-cloud-upload" @click="test">test</Button>
 
-            <Button type="primary" class="button" icon="md-cloud-upload"  @click="handleSubmit('formItem')">提交</Button>
-            <Button type="primary" class="button" icon="md-cloud-upload" @click="test">test</Button>
-
-        </Form>
+            </Form>
         </div>
 
     </div>
@@ -139,11 +123,15 @@
         },
         methods:{
             handleSubmit(name) {
+                // this.$refs[name].validate((valid) => {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         this.$Message.success('Success!');
+                        console.log("success")
                     } else {
                         this.$Message.error('Fail!');
+                        console.log("Fail")
+
                     }
                 })
             },
@@ -157,7 +145,7 @@
         created(){
             let date = new Date();
             this.CurrentYear = date.getFullYear();
-            console.log(this)
+            // console.log(this)
         },
 
     }

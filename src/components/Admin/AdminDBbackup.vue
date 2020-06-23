@@ -22,7 +22,7 @@
         </i-select>
       </Form-item>
 
-      <Form-item label="日期控件">
+      <Form-item label="开启时间段">
         <Date-picker type="datetimerange" placeholder="请选择备份时间段" :value.sync="formItem.date"></Date-picker>
       </Form-item>
 

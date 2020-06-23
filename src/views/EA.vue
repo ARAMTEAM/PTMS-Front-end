@@ -15,7 +15,7 @@
           <p
             class="UncatchText"
             style="height:40px;font-size:20px;margin: 10px 20px;color:#ffffff;float:left;line-height:45px;"
-          >项目实训系统管理员</p>
+          >项目实训系统教务</p>
           <div class="portraitContain" >
             <Avatar class="Portraits" size="large" ><p class="UncatchText" >王老师</p></Avatar>
             
@@ -31,10 +31,8 @@
                     </CellGroup>
                 </Card>
             </div>
-
           </div>
-          
-          
+             
         </div>
       </Header>
       <Layout>
@@ -54,34 +52,58 @@
             :accordion="true"
             :class="menuitemClasses"
           >
-            <MenuItem name="1" to="/admin/home">
+            <MenuItem name="1" to="/ea/home">
               <Icon type="ios-home"></Icon>
               <span>首页</span>
             </MenuItem>
-            <MenuItem name="2" to="/admin/eamanage">
-              <Icon type="ios-keypad"></Icon>
-              <span>教务管理</span>
-            </MenuItem>
+            <Submenu name="2">
+              <template slot="title">
+                <Icon type="ios-analytics"></Icon>
+                <span>实训项目</span>
+              </template>
+              <MenuItem name="2-1" to="/ea/training/create">
+                <span>新建实训</span>
+              </MenuItem>
+              <MenuItem name="2-2" to="/ea/training">
+                <span>实训管理</span>
+              </MenuItem>
+            </Submenu>
             <Submenu name="3">
               <template slot="title">
                 <Icon type="ios-analytics"></Icon>
                 <span>公告通知</span>
               </template>
-              <MenuItem name="3-1" to="/admin/noticemanage/create">
+              <MenuItem name="3-1" to="/ea/noticemanage/create">
                 <span>发布公告</span>
               </MenuItem>
-              <MenuItem name="3-2" to="/admin/noticemanage">
+              <MenuItem name="3-2" to="/ea/noticemanage">
                 <span>公告管理</span>
               </MenuItem>
             </Submenu>
-            <MenuItem name="4" to="/admin/log">
-              <Icon type="ios-paper"></Icon>
-              <span>查看日志</span>
-            </MenuItem>
-            <MenuItem name="5" to="/admin/backup">
-              <Icon type="ios-copy"></Icon>
-              <span>备份</span>
-            </MenuItem>
+            <Submenu name="4">
+              <template slot="title">
+                <Icon type="ios-paper"></Icon>
+                <span>教师管理</span>
+              </template>
+              <MenuItem name="4-1" to="/ea/teacher">
+                <span>教师面板</span>
+              </MenuItem>
+              <MenuItem name="4-2" to="/ea/teacher_search">
+                <span>检索教师</span>
+              </MenuItem>
+            </Submenu>
+            <Submenu name="5">
+              <template slot="title">
+                <Icon type="ios-copy"></Icon>
+                <span>学生管理</span>
+              </template>
+              <MenuItem name="5-1" to="/ea/student">
+                <span>学生面板</span>
+              </MenuItem>
+              <MenuItem name="5-2" to="/ea/student_search">
+                <span>检索学生</span>
+              </MenuItem>
+            </Submenu>
           </Menu>
         </Sider>
 
@@ -172,12 +194,11 @@
   -khtml-user-select: none; /*早期浏览器*/
   user-select: none;
 }
-/*头像菜单*/
 .PMenu{
   background: #f8f8f9;
-  /* display:flex; */
+  display:flex;
   position:absolute;
-  z-index:1;
+  z-index:998;
   top:25px;
   overflow: auto;
   opacity: 0;
@@ -194,7 +215,7 @@
   /* dispaly:flex; */
   position:absolute;
   right: 20px;
-  z-index:2;
+  z-index:999;
   line-height:37px;
   box-shadow: 0 1px 5px 0 rgba(0, 0,0, 0.3);
   /* transition: 0.3s ease-out; */
