@@ -1,9 +1,6 @@
 <template>
   <div class="layout">
-    <!-- <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link>
-    <router-view/>-->
-    <Layout>
+    <Layout :style="{minHeight: '100vh'}">
       <Header :style="{background: '#515A6E'}">
         <div>
           <img
@@ -17,29 +14,23 @@
             style="height:40px;font-size:20px;margin: 10px 20px;color:#ffffff;float:left;line-height:45px;"
           >项目实训系统管理员</p>
           <div class="portraitContain" >
-            <Avatar class="Portraits" size="large" ><p class="UncatchText" >王老师</p></Avatar>
+            <Avatar class="Portraits" size="large" ><p class="UncatchText" >管理员</p></Avatar>
             
             <!-- 头像菜单 -->
             <div class="PMenu">
-                <Card title="管理员1" icon="ios-options" :padding="0" shadow style="width: 200px;">
+                <Card title="欢迎回来" icon="ios-options" :padding="0" shadow style="width: 200px;">
                     <CellGroup>
-                        <Cell title="管理员" label="欢迎回来，admin" />
+                        <Cell title="管理员" label="PTMS管理员" />
                         <Cell title="我的中心" to="/"/>
-                        <Cell title="退出登录" to="/components/badge">
-                            <Badge :count="10" slot="extra" />
+                        <Cell title="退出登录" to="/logout?role=jiaowu">
                         </Cell>
                     </CellGroup>
                 </Card>
             </div>
-
           </div>
-          
-          
         </div>
       </Header>
-      <Layout>
-        
-
+      <Layout >
         <Sider
           collapsible
           :collapsed-width="78"
@@ -67,10 +58,7 @@
                 <Icon type="ios-analytics"></Icon>
                 <span>公告通知</span>
               </template>
-              <MenuItem name="3-1" to="/admin/noticemanage/create">
-                <span>发布公告</span>
-              </MenuItem>
-              <MenuItem name="3-2" to="/admin/noticemanage">
+              <MenuItem name="3-1" to="/admin/noticemanage">
                 <span>公告管理</span>
               </MenuItem>
             </Submenu>
@@ -78,23 +66,34 @@
               <Icon type="ios-paper"></Icon>
               <span>查看日志</span>
             </MenuItem>
-            <MenuItem name="5" to="/admin/backup">
-              <Icon type="ios-copy"></Icon>
-              <span>备份</span>
-            </MenuItem>
+            <Submenu name="5">
+              <template slot="title">
+                <Icon type="ios-copy"></Icon>
+                <span>备份</span>
+              </template>
+              <MenuItem name="5-1" to="/admin/backup">
+                <span>备份1.0</span>
+              </MenuItem>
+              <MenuItem name="5" to="/admin/backup2">
+                <span>备份2.0</span>
+              </MenuItem>
+            </Submenu>
+            
           </Menu>
         </Sider>
-
         <Layout class="navContent" :style="{padding: '0 24px 24px'}">
-          
-
-          <Breadcrumb :style="{margin: '12px 0'}"></Breadcrumb>
-
+          <Breadcrumb :style="{margin: '12px 0'}">
+            <!-- <BreadcrumbItem>管理员</BreadcrumbItem>
+            <BreadcrumbItem>{{bread}}</BreadcrumbItem> -->
+            <BreadcrumbItem v-for="(item, index) in $route.meta.name" :key="index">
+              {{item}}
+            </BreadcrumbItem>
+          </Breadcrumb>
           <Content
             class="content"
-            :style="{padding: '24px', minHeight: '770px', background: '#fff'}"
+            :style="{padding: '24px', minHeight: '740px', background: '#fff'}"
           >
-            <router-view></router-view>
+            <router-view v-if="isRouterAlive"></router-view>
           </Content>
           <footer :style="{margin: '12px 0'}" id="footer">Copyright &copy; SDU ARAM</footer>
         </Layout>
@@ -111,25 +110,10 @@
   border-radius: 0px;
   overflow: hidden;
 }
-.layout-logo {
-  width: 100px;
-  height: 30px;
-  background: #5b6270;
-  border-radius: 3px;
-  float: left;
-  position: relative;
-  top: 15px;
-  left: 20px;
-}
-.layout-nav {
-  width: 420px;
-  margin: 0 auto;
-  margin-right: 20px;
-}
-
-.layout-con {
-  height: 100%;
-  width: 100%;
+.layout-nav{
+    width: 420px;
+    margin: 0 auto;
+    margin-right: 20px;
 }
 .menu-item span {
   display: inline-block;
@@ -164,6 +148,8 @@
   border-radius: 15px;
   min-width: 700px;
   overflow: hidden;
+  box-shadow: 0 1px 5px 0 rgba(0, 0,0, 0.1);
+
 }
 .UncatchText {
   -moz-user-select: none; /*火狐*/
@@ -208,18 +194,6 @@
 .portraitContain:hover .Portraits{
   transform: scale(1.2,1.2);
 }
-/* .Portraits:hover {
-  background:#f56a00;
-  margin:10px 0px;
-  position:absolute;
-  right: 40px;
-  line-height:37px;
-  z-index:999;
-  box-shadow: 0 1px 5px 0 rgba(0, 0,0, 0.3);
-  transition-delay: 0.2s;
-  transform:Scale(1.5,1.5) translateY(10px);
-} */
-
 
 #footer {
   text-align: right;
@@ -227,20 +201,19 @@
 </style>
 
 <script>
-import HelloWorld from "@/components/HelloWorld.vue";
-// import AdminHome from '@/views/AdminHome.vue'
-// import EduAdminManage from '@/views/EduAdminManage.vue'
-// import AdminNotice from '@/views/AdminNotice.vue'
-// import AdminNoticeManage from '@/views/AdminNoticeManage.vue'
-// import AdminLog from '@/views/AdminLog.vue'
-// import AdminDBbackup from '@/views/AdminDBbackup.vue'
-
+  
 export default {
-
+  provide (){
+    return{
+      reload: this.reload
+    }
+  },
   data() {
     return {
+      isRouterAlive: true,//自动刷新页面
       Menu_visible:false,
       activeName: "",
+      bread:"",
       opennames: [],
       isCollapsed: false
     };
@@ -258,10 +231,14 @@ export default {
   },
   methods:{
     showMenu() {
-      console.log(1);
       this.Menu_visible = true;
     },
-
+    reload (){
+      this.isRouterAlive = false
+      this.$nextTick(function(){
+        this.isRouterAlive = true
+      })
+    }
   }
 };
 </script>

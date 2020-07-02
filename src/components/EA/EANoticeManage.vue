@@ -9,7 +9,7 @@
 
       <div class="EAManage">
         <!-- 表格内容 -->
-        <Table stripe  border  highlight-row ref="currentRowTable" :columns="columns3" :data="data">
+        <Table :loading="tableloading" v-show="table" stripe  border  highlight-row ref="currentRowTable" :columns="header" :data="data">
           <template slot-scope="{ row }" slot="name">
               <strong>{{ row.name }}</strong>
           </template>
@@ -19,13 +19,34 @@
               <Button type="error" size="small" @click="remove(index)">删除</Button>
           </template>
         </Table>
+
+        <!-- 用于更新和增加公告的表单 -->
+        <Modal v-model="Modal" title="公告更新" width="600" :closable="false" :mask-closable="false" @on-ok="addOk" @on-cancel="addCancel">
+          <p slot="header" >
+            <span>公告操作</span>
+          </p>
+          <Form v-if="Modal" ref="Form" :model="formItem" :label-width="100" :rules="ruleInline" style="width: 550px;">
+            <FormItem label="公告标题" prop="trainingnoticeTitle">
+                <Input v-model="formItem.trainingnoticeTitle" placeholder="请尽量简洁地输入标题"/>
+            </FormItem>
+            <FormItem label="公告内容" prop="trainingnoticeContent">
+                <Input v-model="formItem.trainingnoticeContent" type="textarea" :rows="8" placeholder="请输入对当前实训下的教师与同学广播的公告内容" />
+            </FormItem>
+          </Form>
+          <div slot="footer">
+            <Button class="ButtonCommit" icon="ios-arrow-back" @click="addCancel">取消</Button>
+            <Button class="button" icon="md-refresh" @click="handleReset('Form')" style="margin-left: 8px">重置</Button>
+            <Button type="primary" class="ButtonCommit" icon="md-cloud-upload" :loading="loading" @click="addOk('Form')">提交</Button>
+          </div>
+        </Modal>
+
       </div>
 
       <br/>
-        <!-- 分页 -->
-        <div class="page">
-          <Page :total="100" :page-size="5" show-total @on-change="search"/>
-        </div>
+      <!-- 分页 -->
+      <div class="page">
+        <Page :total=total :page-size="10" show-total @on-change="page"/> 
+      </div>
 
       
     </div>
@@ -34,23 +55,21 @@
 </template>
 
 <script>
-
+import GLOBAL from '@/api/global_variable'
+const url = GLOBAL.apiURL+'jiaowunotice/';
 export default {
+    inject:['reload'],
     data(){
       return {
-        data:[
-          {jiaowunotice_id:'1',jiaowunotice_title:'软件学院通知',jiaowunotice_content:'软件学院通知全体同学请注意最近的事情等等等等',jiaowunotice_create_time:'2020-02-03',jiaowunotice_update_time:'2020-05-06'},
-          {jiaowunotice_id:'1',jiaowunotice_title:'软件学院通知',jiaowunotice_content:'微电子学院通知全体同学请注意最近的事情等等等',jiaowunotice_create_time:'2020-02-03',jiaowunotice_update_time:'2020-05-06'},
-          {jiaowunotice_id:'1',jiaowunotice_title:'软件学院通知',jiaowunotice_content:'马克思学院通知全体同学请注意最近的事情等等等',jiaowunotice_create_time:'2020-02-03',jiaowunotice_update_time:'2020-05-06'},
-          {jiaowunotice_id:'1',jiaowunotice_title:'软件学院通知',jiaowunotice_content:'电气工程学院通知全体同学请注意最近的事情等等',jiaowunotice_create_time:'2020-02-03',jiaowunotice_update_time:'2020-05-06'},
-          {jiaowunotice_id:'1',jiaowunotice_title:'软件学院通知',jiaowunotice_content:'数学学院通知全体同学请注意最近的事情等等等等',jiaowunotice_create_time:'2020-02-03',jiaowunotice_update_time:'2020-05-06'},
-          {jiaowunotice_id:'1',jiaowunotice_title:'软件学院通知',jiaowunotice_content:'物理学院通知全体同学请注意最近的事情等等等等',jiaowunotice_create_time:'2020-02-03',jiaowunotice_update_time:'2020-05-06'},
-          {jiaowunotice_id:'1',jiaowunotice_title:'软件学院通知',jiaowunotice_content:'化工学院通知全体同学请注意最近的事情等等等等',jiaowunotice_create_time:'2020-02-03',jiaowunotice_update_time:'2020-05-06'},
-          {jiaowunotice_id:'1',jiaowunotice_title:'软件学院通知',jiaowunotice_content:'软件学院通知全体同学请注意最近的事情等等等等',jiaowunotice_create_time:'2020-02-03',jiaowunotice_update_time:'2020-05-06'},
-          {jiaowunotice_id:'1',jiaowunotice_title:'软件学院通知',jiaowunotice_content:'文学院通知全体同学请注意最近的事情等等等等等',jiaowunotice_create_time:'2020-02-03',jiaowunotice_update_time:'2020-05-06'},
-          {jiaowunotice_id:'1',jiaowunotice_title:'软件学院通知',jiaowunotice_content:'外国语学院通知全体同学请注意最近的事情等等等',jiaowunotice_create_time:'2020-02-03',jiaowunotice_update_time:'2020-05-06'},
-        ],
-        columns3: [
+        tableloading:true,
+        loading:false,//表单的loadiing状态
+        Modal:false,
+        correctMes:'',//成功的提示信息
+        table:true,
+        mode:'',
+        total: null,
+        data:[],
+        header: [
           {
               type: 'index',
               width: 60,
@@ -59,20 +78,20 @@ export default {
           {
               title: '公告编号',
               width: 100,
-              key: 'jiaowunotice_id',
+              key: 'trainingnoticeId',
               align: 'center'
           },
           {
               title: '公告标题',
-              key: 'jiaowunotice_title',
+              key: 'trainingnoticeTitle',
           },
           {
               title: '创建时间',
-              key: 'jiaowunotice_create_time',
+              key: 'trainingnoticeCreateTime',
           },
           {
               title: '更新时间',
-              key: 'jiaowunotice_update_time',
+              key: 'trainingnoticeUpdateTime',
           },
           {
               title: 'Action',
@@ -81,32 +100,138 @@ export default {
               align: 'center'
           }
         ],
-      
-        }
+        formItem: {trainingnoticeTitle: '',trainingnoticeContent:'',trainingId:'',},
+        formItem1: {trainingnoticeTitle: '',trainingnoticeContent:'',trainingId:'',},
+        ruleInline: {
+          trainingnoticeTitle: [
+                { required: true, message: '标题禁止为空', trigger: 'blur' }
+            ],
+            trainingnoticeContent: [
+                { required: true, message: '公告内容禁止为空', trigger: 'blur' }
+            ],
+        },
+      }
+    },
+    created(){
+      const _this = this;
+      //获取当前下的公告
+      axios.get(url+this.$route.params.training_id+'/1').then(function (resp){
+        // console.log(resp);
+        _this.data = resp.data.data.content;
+        _this.total = resp.data.data.totalElements; 
+        _this.tableloading = false
+      })
     },
     methods: {
         handleClearCurrentRow () {
             this.$refs.currentRowTable.clearCurrentRow();
         },
+        handleReset (name) {
+                this.$refs[name].resetFields();
+        },
         show (index) {
             this.$Modal.info({
                 title: '公告信息',
-                content: `公告编号：${this.data[index].jiaowunotice_id}<br>公告标题：${this.data[index].jiaowunotice_title}<br>发布时间：${this.data[index].jiaowunotice_create_time}<br>发布时间：${this.data[index].jiaowunotice_update_time}
-                <br>公告内容：${this.data[index].jiaowunotice_content}`
+                content: `公告编号：${this.data[index].trainingnoticeId}<br>公告标题：${this.data[index].trainingnoticeTitle}<br>发布时间：${this.data[index].trainingnoticeCreateTime}<br>发布时间：${this.data[index].trainingnoticeUpdateTime}
+                <br>公告内容：${this.data[index].trainingnoticeContent}`
             //.slice(0,15) + '...'实现简介功能
             })
         },
         remove (index) {
-            this.data6.splice(index, 1);
+          var result = confirm("您确认删除吗？")
+          if(result){
+            axios.delete(url+this.data[index].trainingnoticeId)
+            .then(res=>{
+            if(res.data.success){
+              this.$Message.success('删除数据成功');
+              this.reload();//刷新页面
+            }else{
+              this.$Message.error('删除数据失败');
+              this.$Notice.error({
+                    title: '错误',
+                    desc: res.data.message
+              });
+              this.reload();//刷新页面
+            }
+          })
+          }
         },
         edit(index){
-            
+          this.mode = 'update'
+          this.correctMes = '更新成功！'
+          this.Modal = true
+          this.formItem={...this.data[index]}
         },
         create(){
-            this.$router.push('noticemanage/create')
+          this.mode = 'create'
+          this.correctMes = '新增成功！'
+          this.Modal = true
+          this.formItem={...this.formItem1}
+          this.formItem.trainingId=this.$route.params.training_id
         },
-        search(pageIndex) {
-            console.log(pageIndex)
+        addOk(name){
+          // console.log(this.formItem.grade)
+          this.$refs[name].validate((valid) => {
+            if (valid) {
+              this.loading = true;
+              if(this.mode=='create'){
+                setTimeout(() => {
+                  axios.post(url,this.formItem)
+                  .then(res=>{
+                    if(res.data.success)
+                    {
+                      this.$Message.success(this.correctMes);
+                      this.loading = false;//停止加载
+                      this.Modal = false;//关闭对话框组件
+                      this.reload();//刷新页面
+                    }
+                    else{
+                      this.loading = false;
+                      this.$Message.error('提交失败');
+                    }
+                  })
+                  // this.loading=false
+                },1000)
+              }
+              else{
+                setTimeout(() => {
+                  axios.put(url,this.formItem)
+                  .then(res=>{
+                    this.table = false;
+                    if(res.data.success)
+                    {
+                      this.$Message.success(this.correctMes);
+                      this.loading = false;//停止加载
+                      this.Modal = false;//关闭对话框组件
+                      this.reload();//刷新页面
+                      this.$emit('func',this.msg)
+                    }
+                    else{
+                      this.loading = false;
+                      this.$Message.error('更新失败');
+                    }
+                  })
+                  // this.loading=false
+                },1000)
+              }
+            } else {
+              this.loading=false;
+              this.$Message.error('请完善后再提交');
+            }
+          })
+          
+        },
+        addCancel(){
+          this.loading=false;
+          this.Modal = false
+        },
+        page(currentPage) {
+            const _this = this
+            axios.get(url+this.$route.params.training_id+'/'+currentPage,
+            ).then(function (resp){
+              _this.data = resp.data.data.content;
+              _this.total = resp.data.data.totalElements; 
+            })
         }
     },
 

@@ -1,43 +1,89 @@
 <template>
   <div class="Container">
     <h1>数据库备份界面</h1>
+    <div class="MForm">
+      <Button type="primary" class="button" @click="backup" icon="ios-add-circle-outline">一键备份</Button>
 
-    <i-form :model="formItem" :label-width="140" class="form">
-      <Form-item label="当前是否开启备份">
-        <i-Switch :checked.sync="formItem.switch" size="large" @on-change="change">
-          <span slot="open">开启</span>
-          <span slot="close">关闭</span>
-        </i-Switch>
-      </Form-item>
-    </i-form>
+      <br><br>
 
-    <!-- 组件可视化的判断是否 -->
-    <i-form :model="formItem" :label-width="140" class="form" :style="visibility">
-      <Form-item label="备份频率">
-        <i-select :model.sync="formItem.frequency" placeholder="请选择">
-          <i-option value="1">1天1次</i-option>
-          <i-option value="3">3天1次</i-option>
-          <i-option value="5">5天1次</i-option>
-          <i-option value="7">7天1次</i-option>
-        </i-select>
-      </Form-item>
-
-      <Form-item label="开启时间段">
-        <Date-picker type="datetimerange" placeholder="请选择备份时间段" :value.sync="formItem.date"></Date-picker>
-      </Form-item>
-
-      <Form-item label="备注信息">
-        <i-input :value.sync="formItem.note" placeholder="请输入"></i-input>
-      </Form-item>
-    </i-form>
-
-    <i-button type="primary" class="commit" @click="confirm">确认</i-button>
+      <div class="TableManage">
+        <Table :loading="tableloading" border :columns="header" :data="data">
+          <template slot-scope="{ row }" slot="name">
+            <strong>{{ row.name }}</strong>
+          </template>
+          <template slot-scope="{ row, index }" slot="action">
+              <Button type="primary" size="small" style="margin-right: 5px" @click="put(index)">备份复原</Button>
+              <Button type="error" size="small" @click="remove(index)">删除备份</Button>
+          </template>
+        </Table>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import GLOBAL from '@/api/global_variable'
+const url = GLOBAL.apiURL+'Database/backup/';
+
 export default {
+  inject:['reload'],
+  data() {
+    return {
+      tableloading:true,
+      data:[],
+      header: [
+            {title: '备份',key: 'title',align: 'center'},
+            {title: '操作',slot: 'action',width: 300, align: 'center'},
+          ],
+    };
+  },
+  created() {
+    axios.get(url).then(res => {
+      this.data = res.data.data
+      this.tableloading = false
+    })
+  },
   methods: {
+    backup() {
+      var  result = confirm("您确定要进行备份吗？")
+      if(result){
+        var date = new Date();
+        this.$Message.warning('您正在备份请耐心等待');
+        axios.post(url + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()+"-" + date.getHours()+"_" + date.getMinutes()+'_'+date.getSeconds()+' Backup')
+        .then(res=>{
+          console.log(res)
+          this.$Notice.warning({
+            title: "备份成功",
+            desc:"您已经备份成功",
+            duration: 6
+          });
+          this.reload();
+        })
+      }
+    },
+    remove (index) {
+      var result = confirm("您确认删除吗？")
+      if(result){
+        axios.delete(url+this.data[index].title)
+        .then(res=>{
+        if(res.data.success){
+          this.$Message.success('删除数据成功');
+          this.reload();//刷新页面
+        }else{
+          this.$Message.error('删除数据失败');
+          this.reload();//刷新页面
+        }
+      })
+      }
+    },
+    put(index) {
+      this.$Message.warning('您正在还原备份');
+      axios.put(url,this.data[index].title)
+      .then(res=>{
+        this.$Message.success('还原备份成功');
+        this.reload();//刷新页面
+      })
+    },
     change(status) {
       if (status) {
         this.visibility = "visibility:visible";
@@ -72,21 +118,22 @@ export default {
       });
     }
   },
-  data() {
-    return {
-      visibility: "visibility:hidden",
-      formItem: {
-        frequency: "",
-        date: "",
-        note: ""
-      }
-    };
-  },
+  
 };
 </script>
 
-<style>
+<style scoped>
 .commit {
   margin: 10px 20px;
+}
+.Container{
+  padding: 10px;
+}
+.MForm{
+      padding: 20px 0;
+}
+.TableManage{
+  margin: 0px 0 20px 0;
+  border-radius: 100px;
 }
 </style>

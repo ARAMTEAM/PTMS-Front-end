@@ -6,9 +6,9 @@
     </div>
     <br/>
         <!-- 分页 -->
-    <div class="page">
-      <Page :total="100" :page-size="5" show-total @on-change="search"/>
-    </div>
+        <div class="page">
+            <Page :total=total :page-size="10" show-total @on-change="page"/> 
+        </div>    
   </div>
 </template>
 
@@ -16,6 +16,8 @@
 export default {
 data () {
     return {
+        total: null,
+        data:[],
         columns1: [
             {
                 type: 'index',
@@ -60,14 +62,38 @@ data () {
             }
         ]
     }
-  }
+  },
+    created(){
+        const _this = this;
+        axios.get(url+'1').then(function (resp){
+            console.log(resp);
+            _this.data = resp.data.data.content;
+            _this.total = resp.data.data.totalElements; 
+            _this.tableLoading = false//表格加载成功
+        })
+    },
+    methods: {
+        page(currentPage) {
+            const _this = this
+            axios.get(url+currentPage,
+            ).then(function (resp){
+            console.log(resp);
+            _this.data = resp.data.data.content;
+            _this.total = resp.data.data.totalElements; 
+            })
+        }
+    },
 }
 </script>
 
-<style>
+<style scoped>
 .LogForm{
   margin: 20px 0;
   border: 1px solid #cfcfcf;
 }
+.page{
+      display:table;
+      margin:0 auto;
+  }
 
 </style>

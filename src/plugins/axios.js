@@ -5,8 +5,10 @@ import axios from "axios";
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
+// axios.defaults.baseURL = 'http://192.168.1.102:8181/';
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.withCredentials = true
 
 let config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
