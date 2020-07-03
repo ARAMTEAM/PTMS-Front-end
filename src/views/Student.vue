@@ -231,7 +231,6 @@
       .then(res=>{
         this.Info=res.data.data
       })
-      console.log(this.Info)
       if (this.$route.meta && this.$route.meta.order) {
         this.activeName = this.$route.meta.order;
         this.opennames.push(this.$route.meta.order.split("-")[0]);

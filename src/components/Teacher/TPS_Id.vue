@@ -9,7 +9,8 @@
         <br><br>
         <div class="TableManage">
           <!-- 表格内容 -->
-          <Table stripe  border  ref="currentRowTable" :columns="header1" :data="student">
+          <h2>学生与项目基本信息</h2>
+          <Table :loading="tableloading1" stripe  border  ref="currentRowTable" :columns="header1" :data="student">
             <template slot-scope="{ row }" slot="name">
                 <strong>{{ row.name }}</strong>
             </template>
@@ -19,7 +20,7 @@
         <!-- style="width: 55%;float:right;" -->
         <div class="TableManage" >
           <!-- 表格内容 -->
-          <Table stripe  border  ref="currentRowTable" :columns="header2" :data="project">
+          <Table :loading="tableloading2" stripe  border  ref="currentRowTable" :columns="header2" :data="project">
             <template slot-scope="{ row }" slot="name">
                 <strong>{{ row.name }}</strong>
             </template>
@@ -29,17 +30,36 @@
           </Table>
         </div>
         <br/>
-        <div>展示阶段性报告</div>
+        <h2>展示阶段性报告</h2>
+        <div>
+          <Table :loading='tableloading' stripe  border  highlight-row ref="currentRowTable" :columns="header" :data="data">
+            <template slot-scope="{ row }" slot="name">
+                <strong>{{ row.name }}</strong>
+            </template>
+            <template slot-scope="{ row, index }" slot="data">
+                <Button type="warning" size="default">{{data[index].studentreportDate|dataFormat}}</Button>
+            </template>
+            <template slot-scope="{ row, index }" slot="action">
+                <Button type="primary" size="small" style="margin-right: 5px" @click="download(index)">下载报告</Button>
+                <Button type="success" size="small" @click="shenyue(index)">标记为已阅</Button>
+            </template>
+          </Table>
+        </div>
       </div>
     </div>
   </template>
   <script>
 import GLOBAL from '@/api/global_variable'
 const url = GLOBAL.apiURL
+import moment from 'moment'
+
 export default {
       
 data(){
   return {
+    tableloading:true,
+    tableloading1:true,
+    tableloading2:true,
     loading:false,//表单的loadiing状态
     student:[],
     project:[],
@@ -47,6 +67,7 @@ data(){
     mode:'',
     total: null,
     data: [],
+    inject:['reload'],
     header1: [
       {title: '学生学号',key: 'studentId',align: 'center'},
       {title: '学生姓名',key: 'studentName',align: 'center'},
@@ -84,6 +105,43 @@ data(){
             }
       },
     ],
+    header: [
+            {
+                type: 'index',
+                width: 60,
+                align: 'center'
+            },
+            {
+                title: '报告名称',
+                key: 'studentreportTitle',
+                align: 'center'
+            },
+            {
+                title: '报告类型',
+                key: 'studentreportType',
+                align: 'center'
+            },
+            {
+                title: '报告状态',
+                key: 'studentreportStatus',
+                align: 'center'
+            },
+            {
+                title: '上传时间',
+                key: 'studentreportDate',
+                align: 'center',
+                render: (h, params) => {
+                    let time = moment(params.row.studentreportDate).format('YYYY-MM-DD HH:mm:ss')
+                    return h('div', time);
+                }
+            },
+            {
+                title: '操作',
+                slot: 'action',
+                width: 200,
+                align: 'center'
+            }
+      ],
     
     }
 },
@@ -91,11 +149,19 @@ created(){
   const _this = this;
   axios.get(url+'student/One/'+_this.$route.params.studentId).then(function (resp){
     _this.student.push(resp.data.data)
+    _this.tableloading1=false
   })
   axios.get(url+'stuAndpro/listByStudentId/'+this.$route.params.studentId).then(function (resp){
     console.log(resp);
     _this.project.push(resp.data.data)
     _this.total = resp.data.data.totalElements; 
+    _this.tableloading2=false
+  })
+  axios.get(url+'studentreport/teachersee/'+this.$route.params.studentId+'/1').then(function (resp){
+          console.log(resp);
+          _this.data = resp.data.data.content;
+          _this.total = resp.data.data.totalElements; 
+          _this.tableloading=false
   })
 },
 methods: {
@@ -108,102 +174,8 @@ methods: {
     backTo(){
         this.$router.go(-1);//返回上一层
     },
-    edit(){
-      this.mode = '学生更新';
-      this.correctMes = '学生更新成功';
-      this.studentModal = true
-      this.formItem.id=this.data[index].id
-      this.formItem.name=this.data[index].name
-      this.formItem.rank=this.data[index].rank
-      this.formItem.dept=this.data[index].dept
-      this.formItem.telephone=this.data[index].telephone
-      this.formItem.email=this.data[index].email
-      this.formItem.passwd=this.data[index].passwd
-      this.formItem.training=this.data[index].training
-    },
-    async addOk(){
-      this.$refs.studentForm.validate((valid) => {
-                if (valid) {
-                  this.loading = true;
-                  // 需要些axios的POST
-                  setTimeout(() => {
-                    this.$Message.success(this.correctMes);
-                    this.loading=false;//停止加载
-                    this.studentModal = false//关闭对话框组件
-                  },1000);
-                  
-                } else {
-                    this.loading=false;
-                    this.$Message.error('请完善后再提交');
-                }
-        })
-    },
-    addCancel(){
-      this.loading=false;
-      this.studentModal = false
-    },
-    editExcept(index){
-      this.mode = '学生志愿';
-      this.correctMes = '学生志愿更新成功';
-      this.exceptModal = true
-      this.formItem2.exception_1=this.data[index].exception_1
-      this.formItem2.exception_2=this.data[index].exception_2
-      this.formItem2.exception_3=this.data[index].exception_3
-      this.formItem2.exception_4=this.data[index].exception_4
-      this.formItem2.exception_5=this.data[index].exception_5
-      this.formItem2.project=this.data[index].project
-    },
-    async exceptOk(){
-      this.$refs.exceptForm.validate((valid) => {
-        if (valid) {
-          this.loading = true;
-          // 需要些axios的POST
-          setTimeout(() => {
-            this.$Message.success(this.correctMes);
-            this.loading=false;//停止加载
-            this.exceptModal = false//关闭对话框组件
-          },1000);
-          
-        } else {
-            this.loading=false;
-            this.$Message.error('请完善后再提交');
-        }
-      })
-    },
-    exceptCancel(){
-      this.loading=false;
-      this.exceptModal = false
-    },
-    editProject(index){
-      this.mode = '学生志愿';
-      this.correctMes = '学生志愿更新成功';
-      this.projectModal = true
-      this.formItem3.training=this.data[index].training
-      this.formItem3.project=this.data[index].project
-      this.formItem3.role=this.data[index].role
-      this.formItem3.grades_5=this.data[index].grades_5
-      this.formItem3.grades_100=this.data[index].grades_100
-    },
-    async projectOk(){
-      this.$refs.projectForm.validate((valid) => {
-        if (valid) {
-          this.loading = true;
-          // 需要些axios的POST
-          setTimeout(() => {
-            this.$Message.success(this.correctMes);
-            this.loading=false;//停止加载
-            this.projectModal = false//关闭对话框组件
-          },1000);
-          
-        } else {
-            this.loading=false;
-            this.$Message.error('请完善后再提交');
-        }
-      })
-    },
-    projectCancel(){
-      this.loading=false;
-      this.projectModal = false
+    download (index) {
+        window.open(url+'studentreport/download'+'?fileId='+this.data[index].studentreportId,'_blank');
     },
     
     
@@ -214,7 +186,22 @@ methods: {
           _this.data = resp.data.content;
           _this.total = resp.data.totalElements; 
         })
-    }
+    },
+    shenyue (index) {
+       var result = confirm("确定标记已阅吗")
+       if(result){
+         axios.post(url+'studentreport/read/'+this.data[index].studentreportId)
+         .then(res=>{
+         if(res.data.success){
+           this.$Message.success(res.data.message);
+           this.reload();//刷新页面
+         }else{
+           this.$Message.error(res.data.message);
+           this.reload();//刷新页面
+         }
+       })
+       }
+    },
 },
   
       

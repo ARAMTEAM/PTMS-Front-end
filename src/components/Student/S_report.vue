@@ -53,7 +53,7 @@
                 :on-format-error="handleFormatError"
                 :on-exceeded-size="handleMaxSize"
                 :max-size="10000"
-                action="http://192.168.1.102:8181/studentreport/123/1">
+                :action="uploadUrl">
                 <!-- :action="uploadUrl"> -->
                 <div style="padding: 20px 0">
                     <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
@@ -87,6 +87,8 @@
   import GLOBAL from '@/api/global_variable'
   const url = GLOBAL.apiURL+'studentreport/';
   import Notice from "@/components/EA/EANoticeManage";
+  import moment from 'moment'
+
   export default {
       inject:['reload'],
       components:{Notice},
@@ -130,10 +132,12 @@
             },
             {
                 title: '上传时间',
-                slot: 'data',
-                width: 200,
-                className: 'uploadTime',
+                key: 'studentreportDate',
                 align: 'center',
+                render: (h, params) => {
+                    let time = moment(params.row.studentreportDate).format('YYYY-MM-DD HH:mm:ss')
+                    return h('div', time);
+                }
             },
             {
                 title: '操作',

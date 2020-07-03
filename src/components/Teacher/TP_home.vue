@@ -12,7 +12,7 @@
 
       <div class="EAManage">
         <!-- 表格内容 -->
-        <Table stripe  border  highlight-row ref="currentRowTable" :columns="header" :data="data">
+        <Table :loading="tableloading" stripe  border  highlight-row ref="currentRowTable" :columns="header" :data="data">
           <template slot-scope="{ row }" slot="name">
               <strong>{{ row.name }}</strong>
           </template>
@@ -40,6 +40,7 @@ export default {
     data(){
       return {
         total: null,
+        tableloading:true,
         data: [],
         Info:{},//当前角色的信息，这也就是教师的基本信息
         header: [
@@ -93,6 +94,7 @@ export default {
           console.log(resp);
           _this.data = resp.data.data.content;
           _this.total = resp.data.data.totalElements; 
+          _this.tableloading=false
         })
       })
 

@@ -54,10 +54,21 @@
                 <span>学生面板</span>
               </MenuItem>
             </Submenu>
-            <MenuItem name="5" to="/ea/project">
-              <Icon type="ios-home"></Icon>
-              <span>快速审批</span>
-            </MenuItem>
+            <Submenu name="5">
+              <template slot="title">
+                <Icon type="ios-copy"></Icon>
+                <span>快速审批</span>
+              </template>
+              <MenuItem name="5-1" to="/ea/project">
+                <span>待审核项</span>
+              </MenuItem>
+              <MenuItem name="5-2" to="/ea/project1">
+                <span>需答辩项</span>
+              </MenuItem>
+              <MenuItem name="5-3" to="/ea/expect">
+                <span>志愿分配</span>
+              </MenuItem>
+            </Submenu>
           </Menu>
         </Sider>
         <Layout class="navContent" :style="{padding: '0 24px 24px'}">
@@ -195,7 +206,6 @@ export default {
     axios.get(GLOBAL.apiURL+'jiaowu/one/'+this.$options.methods.getCookie('id'))
     .then(res=>{
       this.Info=res.data.data
-      console.log(this.Info)
     })
 
     if (this.$route.meta && this.$route.meta.order) {

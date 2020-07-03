@@ -4,7 +4,7 @@
       <div class="MForm">
           <!-- 增加教务跳转页面 -->
         <Button class="button" @click="backTo" icon="ios-arrow-back">返回</Button>
-        <Button type="primary" class="button" @click="edit" icon="ios-add-circle-outline">修改学生基本信息</Button>
+        <!-- <Button type="primary" class="button" @click="edit" icon="ios-add-circle-outline">修改学生基本信息</Button> -->
         <!-- <Button @click="handleClearCurrentRow" class="button" icon="ios-trash">清除选中行标记</Button> -->
         <br><br>
   
@@ -95,7 +95,7 @@
             <div slot="footer">
               <Button class="button" icon="md-refresh" @click="handleReset('projectForm')" style="margin-left: 8px">重置</Button>
               <Button class="ButtonCommit" icon="ios-arrow-back" @click="addCancel3">取消</Button>
-              <Button type="primary" class="ButtonCommit" icon="md-cloud-upload" :loading="loading" @click="addOk3">提交</Button>
+              <Button type="primary" class="ButtonCommit" icon="md-cloud-upload" :loading="loading3" @click="addOk3">提交</Button>
             </div>
           </Modal>
         </div>
@@ -120,6 +120,7 @@
           tableloading2:true,
           tableloading3:true,
           loading:false,//表单的loadiing状态
+          loading3:false,//表单的loadiing状态
           studentModal:false,
           exceptModal:false,
           projectModal:false,
@@ -186,8 +187,8 @@
               ],
           },
           header3: [
-            {   title: '所处实训',key: 'trainingId',align: 'center'},
-            {   title: '参与项目',key: 'projectId',align: 'center'},
+            // {   title: '所处实训',key: 'trainingId',align: 'center'},
+            {   title: '参与项目',key: 'projectName',align: 'center'},
             {
                   title: '队内职务',
                   key: 'isleader',
@@ -222,9 +223,15 @@
             },
             {   title: '操作', slot: 'action', width: 200,align: 'center'},
           ],
-          formItem3: {studentId:'',grade5points:null,grades_100: null },
+          formItem3: {studentId:'',projectId:null,grade5points:null,grades_100: null },
           ruleInline3: {
 
+              projectId: [
+                  { required: true, type:'number',message: '项目禁止为空', trigger: 'blur' }
+              ],
+              grade5points: [
+                  { required: true, type:'number',message: '5分制成绩禁止为空', trigger: 'blur' }
+              ],
               grade5points: [
                   { required: true, type:'number',message: '5分制成绩禁止为空', trigger: 'blur' }
               ],
@@ -269,12 +276,13 @@
           },
           edit1(index){
             this.studentModal = true;
+            this.formItem.studentId = this.studentId
             this.formItem={...this.student[index]}
           },
           edit3(index){
             this.formItem3.studentId = this.studentId
-            this.projectModal = true;
             this.formItem3={...this.project[index]}
+            this.projectModal = true;
           },
           edit(){
             this.mode = '学生更新';
@@ -282,11 +290,12 @@
             this.studentModal = true
             this.formItem=this.data[index]
           },
-          async addOk(){
+          addOk(){
             this.$refs.studentForm.validate((valid) => {
+                // this.formItem={...this.student[index]}
                       if (valid) {
                         setTimeout(() => {
-                        axios.post(url,this.formItem)
+                        axios.put(url,this.formItem)
                         .then(res=>{
                           console.log(res);
                           if(res.data.success)
@@ -314,8 +323,9 @@
             this.loading=false;
             this.studentModal = false
           },
-          async addOk3(){
+          addOk3(){
             this.$refs.projectForm.validate((valid) => {
+                  // this.formItem3={...this.project[index]}
                       if (valid) {
                         this.loading3 = true;
                         setTimeout(() => {

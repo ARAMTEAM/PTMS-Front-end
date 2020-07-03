@@ -4,7 +4,7 @@
       <div class="MForm">
           <!-- 按钮以及检索 -->
         <Button class="button" @click="backTo" icon="ios-arrow-back">返回</Button>
-        <Button type="primary" size="small" style="margin-right: 5px" @click="enter(index)">test</Button>
+        <!-- <Button type="primary" size="small" style="margin-right: 5px" @click="enter(index)">test</Button> -->
         <Button @click="noticeModal = true" class="button" icon="md-book">公告管理</Button>
         <br><br>
   

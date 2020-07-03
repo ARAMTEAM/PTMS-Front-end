@@ -5,7 +5,7 @@
     
     <div class="MForm">
         <!-- 按钮以及检索 -->
-        <Button type="primary" class="button" @click="create" icon="md-cloud-download">下载excel打分模板</Button>
+        <!-- <Button type="primary" class="button" @click="create" icon="md-cloud-download">下载excel打分模板</Button> -->
         <Button @click="handleClearCurrentRow" class="button" icon="ios-trash">清除选中行标记</Button>
         <Input search enter-button style="width:30%;float:right;" placeholder="检索项目" />
         <br><br>

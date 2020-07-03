@@ -165,9 +165,36 @@ Vue.use(VueRouter)
         path: 'project',
         component: () => import('../components/EA/ProjectHome.vue'),
         meta: {
-          title:"项目管理",
-          order:"5",
-          name:['教务','快速审批']
+          title:"待审核",
+          order:"5-1",
+          name:['教务','快速审批','快速审批']
+        }
+      },
+      {
+        path: 'project1',
+        component: () => import('../components/EA/ProjectHome1.vue'),
+        meta: {
+          title:"需答辩",
+          order:"5-2",
+          name:['教务','快速审批','需答辩项目审批']
+        }
+      },
+      {
+        path: 'expect',
+        component: () => import('../components/EA/Train_expect.vue'),
+        meta: {
+          title:"需答辩",
+          order:"5-3",
+          name:['教务','快速审批','一键分配志愿']
+        }
+      },
+      {
+        path: 'expect/:trainingId',
+        component: () => import('../components/EA/ProjectHome2.vue'),
+        meta: {
+          title:"需答辩",
+          order:"5-3",
+          name:['教务','快速审批','一键分配志愿']
         }
       },
     ]
@@ -197,20 +224,11 @@ Vue.use(VueRouter)
         },
       },
       {
-        path: 'notice',
-        component: () => import('../components/Teacher/TP_notice.vue'),
-        meta: {
-          title:"公告管理",
-          order:"3-1",
-          name:['教师','公告管理','项目公告']
-        }
-      },
-      {
         path: 'project',
         component: () => import('../components/Teacher/TP_home.vue'),
         meta: {
           title:"项目列表",
-          order:"4-1",
+          order:"3-1",
           name:['教师','项目监督','项目列表']
         },
       },
@@ -219,7 +237,7 @@ Vue.use(VueRouter)
         component: () => import('../components/Teacher/TP_Id.vue'),
         meta: {
           title:"项目详情",
-          order:"4-1",
+          order:"3-1",
           name:['教师','项目监督','项目列表','项目详情']
         },
       },
@@ -228,7 +246,7 @@ Vue.use(VueRouter)
         component: () => import('../components/Teacher/TPS_Id.vue'),
         meta: {
           title:"具体学生",
-          order:"4-1",
+          order:"3-1",
           name:['教师','项目监督','项目列表','项目详情','具体学生']
         },
       },
@@ -237,7 +255,7 @@ Vue.use(VueRouter)
         component: () => import('../components/Teacher/TP_student.vue'),
         meta: {
           title:"学生列表",
-          order:"4-2",
+          order:"3-2",
           name:['教师','项目监督','学生列表']
         },
       },
@@ -246,7 +264,7 @@ Vue.use(VueRouter)
         component: () => import('../components/Teacher/TPS_Id.vue'),
         meta: {
           title:"具体学生",
-          order:"4-2",
+          order:"3-2",
           name:['教师','项目监督','学生列表','具体学生']
         },
       },
@@ -255,7 +273,7 @@ Vue.use(VueRouter)
         component: () => import('../components/Teacher/TP_check.vue'),
         meta: {
           title:"项目审核",
-          order:"4-3",
+          order:"3-3",
           name:['教师','项目监督','项目审核']
         },
       },

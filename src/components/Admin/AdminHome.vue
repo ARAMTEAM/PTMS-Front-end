@@ -6,10 +6,10 @@
                 <h2>管理人员</h2>
                 <Row>
                     <Col span="6">
-                        <mycard icon="md-contacts" title="管理员数量" count="1" bgcolor="#45aaf2"></mycard>
+                        <mycard icon="md-contacts" title="管理员数量" count="1" bgcolor="#d1d8e0"></mycard>
                     </Col>
                     <Col span="6">
-                        <mycard icon="md-home" title="管理教务数量" :count="jiaowuNum" bgcolor="#4b7bec"></mycard>
+                        <mycard icon="md-home" title="管理教务数量" :count="jiaowuNum" bgcolor="#778ca3"></mycard>
                     </Col>
                     <Col span="6">
                         <mycard icon="md-people" title="管理教师数量" :count="teacherNum" bgcolor="#d1d8e0"></mycard>
@@ -23,10 +23,10 @@
                 <h2>备份数量</h2>
                 <Row>
                     <Col span="6">
-                        <mycard icon="md-copy" title="备份数量" :count="backup.length" bgcolor="#2bcbba"></mycard>
+                        <mycard icon="md-copy" title="备份数量" :count="backup.length" bgcolor="#d1d8e0"></mycard>
                     </Col>
                     <Col span="6">
-                        <mycard icon="md-time" title="最近一次的备份时间" :count="backup[0].title.split('_')[0]+':'+backup[0].title.split('_')[1]" bgcolor="#26de81"></mycard>
+                        <mycard icon="md-time" title="最近一次的备份时间" :count="backup[0].title.split('_')[0]+':'+backup[0].title.split('_')[1]" bgcolor="#778ca3"></mycard>
                     </Col>
                 </Row>
             </div>
@@ -40,66 +40,6 @@
                     </Col>
                 </Row>
             </div>
-            
-
-            <!-- <div class="topContainer">
-                <div class="eaNum">
-
-                    <div class="textCard">
-                        <p>当前管理</p>
-                        <h2>教务个数</h2>
-                    </div>
-                    <div class="ColorCard"><div class="NumBox">19</div></div>
-                </div>
-                <div class="eaNum">
-
-                    <div class="textCard">
-                        <p>当前日志</p>
-                        <h2>记录条数</h2>
-                    </div>
-                    <div class="ColorCard"><div class="NumBox">1564</div></div>
-                </div>
-                <Row>
-                    <Col span="11">
-                        <Card class="eaNum">
-                            <div class="textCard">
-                                <p>当前管理</p>
-                                <h2>教务个数</h2>
-                            </div>
-                            <div class="ColorCard"><div class="NumBox">19</div></div>
-                        </Card>
-                    </Col>
-                    <Col span="11" offset="2">
-                        <Card dis-hover>
-                            <p slot="title">Disable card with hover shadows</p>
-                            <p>Content of card</p>
-                            <p>Content of card</p>
-                            <p>Content of card</p>
-                        </Card>
-                    </Col>
-                </Row>
-
-
-            </div>
-
-        
-
-        <div class="p">
-            <div style="background:#eee;margin:20px;padding: 20px;border-radius:10px;">
-                <Card :bordered="false">
-                    <p slot="title">近期公告</p>
-                    <p>公告1 [2020/06/07] </p>
-                    <p>公告1 [2020/06/07] </p>
-                </Card>
-            </div>
-
-            <Card style="margin:20px;background:#eee;border-radius:10px;width:600px">
-                <h3 >管理下的教务</h3>
-                <i-table :row-class-name="rowClassName" :columns="columns1" :data="data1" :style="{width:'500px',margin:'20px'}"></i-table>
-            </Card>
-
-        </div>
-         -->
         
     </div>
     </div>
@@ -167,28 +107,7 @@ const url = GLOBAL.apiURL
                     },
                 ],
                 
-                data1: [
-                    {
-                        name: '王小明',
-                        age: 18,
-                        address: '北京市朝阳区芍药居'
-                    },
-                    {
-                        name: '张小刚',
-                        age: 25,
-                        address: '北京市海淀区西二旗'
-                    },
-                    {
-                        name: '李小红',
-                        age: 30,
-                        address: '上海市浦东新区世纪大道'
-                    },
-                    {
-                        name: '周小伟',
-                        age: 26,
-                        address: '深圳市南山区深南大道'
-                    }
-                ],
+                
             }
         },
         created() {

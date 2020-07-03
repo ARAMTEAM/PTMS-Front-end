@@ -1,15 +1,7 @@
 <template>
   <div class="Container" >
-    <h1>项目管理界面</h1>
+    <h1>待答辩项目</h1>
     <div class="MForm">
-        <!-- 按钮以及检索 -->
-      <Button class="button" @click="backTo" icon="ios-arrow-back">返回</Button>
-      <Button type="primary" class="button" @click="create" icon="ios-add-circle-outline">项目添加</Button>
-      <Button @click="noticeModal = true" class="button" icon="md-book">公告管理</Button>
-      <Button type="success" @click="exportExcel" class="button" icon="md-book">导出实训中学生成绩</Button>
-
-      <Input search enter-button style="width:30%;float:right;" placeholder="检索项目" />
-      <br><br>
 
       <div class="EAManage">
         <!-- 表格内容 -->
@@ -19,8 +11,8 @@
           </template>
           <template slot-scope="{ row, index }" slot="action">
               <Button type="primary" size="small" style="margin-right: 5px" @click="show(index)">查看</Button>
-              <Button type="warning" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
-              <Button type="error" size="small" @click="remove(index)">删除</Button>
+              <Button type="success" size="small" style="margin-right: 5px" @click="pass(index)">通过</Button>
+              <Button type="error" size="small" style="margin-right: 5px" @click="notpass(index)">不通过</Button>
           </template>
         </Table>
         <!-- 用于更新和增加教师项目的表单 -->
@@ -107,7 +99,6 @@ export default {
         mode:'',
         total: null,
         data: [],
-        tableData:[],//表格数据，提供一键导出功能
         teacher:{},//所有老师，供选择
         trainingId:'',//记录当前的trainingid，在填表时自动填写
         header: [
@@ -150,51 +141,24 @@ export default {
               align: 'center'
           }
         ],
-        formItem: { projectName:'',projectStatus: '',projectMaxNum:6,projectHelper: '',projectHelperTel: '', projectIntervalDay: 3,projectIntroduction:'', projectApplicantType:'教师',teacherId: '',trainingId:''},
-        formItem1: { projectName:'',projectStatus: '',projectMaxNum:6,projectHelper: '',projectHelperTel: '', projectIntervalDay: 3,projectIntroduction:'', projectApplicantType:'教师',teacherId: '',trainingId:''},
-        ruleInline: {
-          projectName: [
-              { required: true, message: '项目名称禁止为空', trigger: 'blur' }
-          ],
-          projectStatus: [
-              { required: true, message: '当前状态禁止为空', trigger: 'blur' }
-          ],
-          projectMaxNum: [
-              { required: true, type:'number',message: '最大人数禁止为空', trigger: 'blur' }
-          ],
-          projectHelper: [
-              { required: false,message: '', trigger: 'blur' }
-          ],
-          projectHelperTel: [
-              { required: false, message: '', trigger: 'blur' }
-          ],
-          projectIntervalDay: [
-              { required: true, type:'number',message: '阶段性报告间隔禁止为空', trigger: 'blur' }
-          ],
-          projectIntroduction: [
-              { required: true, message: '项目介绍禁止为空', trigger: 'blur' }
-          ],
-          projectApplicantType: [
-              { required: true, message: '项目类型禁止为空', trigger: 'blur' }
-          ],                    
-          teacherId: [
-              { required: true,message: '指导教师禁止为空', trigger: 'blur'  }
-          ],
-
-        },
+        debate1: { projectId:null,trainingId:null,projectStatus:'需答辩'},
+        notpass1: { projectId:null,trainingId:null, projectStatus:'不通过'},
+        pass1: {  projectId:null,trainingId:null,projectStatus:'通过'},
       }
     },
     created(){
-      this.trainingId=this.$route.params.training_id
       const _this = this;
-      axios.get(url+'All/'+this.$route.params.training_id+'/1').then(function (resp){
+      axios.get(url+'NeedDebate/1').then(function (resp){
         // console.log(resp);
         _this.data = resp.data.data.content;
         _this.total = resp.data.data.totalElements; 
+        console.log(_this.data)
         _this.tableloading = false
       })
       axios.get(GLOBAL.apiURL+'teacher/All/').then(res=>{
+        console.log(res);
         this.teacher = res.data.data;
+        console.log(this.teacher)
       })
     },
     methods: {
@@ -212,24 +176,55 @@ export default {
               title: '项目信息',
                 content: `项目编号：${this.data[index].projectId}<br>项目名称：${this.data[index].projectName}<br>项目最大人数：${this.data[index].projectMaxNum}<br>项目类型：${this.data[index].projectApplicantType}
                 <br>项目状态：${this.data[index].projectStatus}<br>项目介绍：${this.data[index].projectIntroduction}<br>项目助教：${this.data[index].projectHelper}<br>助教电话：${this.data[index].projectHelperTel}<br>阶段性报告提交阶段时间间隔：${this.data[index].projectIntervalDay}天
-                <br>指导教师：${this.data[index].teacherName}<br>所属实训：${this.data[index].trainingId}`
+                <br>教师号：${this.data[index].teacherId}<br>所属实训：${this.data[index].trainingId}`
             })
         },
-        remove (index) {
-          var result = confirm("您确认删除吗？")
-          if(result){
-            axios.delete(url+this.data[index].projectId)
-            .then(res=>{
-            if(res.data.success){
-              this.$Message.success('删除数据成功');
-              this.reload();//刷新页面
-            }else{
-              this.$Message.error('删除数据失败');
-              this.reload();//刷新页面
-            }
+        pass(index){
+          this.pass1.projectId = this.data[index].projectId
+          this.pass1.trainingId = this.data[index].trainingId
+          axios.put(url+'jiaowu',this.pass1)
+          .then(res=>{
+            if(res.data.success)
+              {
+                this.$Message.success(res.data.message);
+                this.reload();//刷新页面
+              }
+              else{
+                this.$Message.error('审批出现问题');
+              }
           })
-          }
         },
+        debate(index){
+          this.debate1.projectId = this.data[index].projectId
+          this.debate1.trainingId = this.data[index].trainingId
+          axios.put(url+'jiaowu',this.debate1)
+          .then(res=>{
+            if(res.data.success)
+              {
+                this.$Message.success(res.data.message);
+                this.reload();//刷新页面
+              }
+              else{
+                this.$Message.error('审批出现问题');
+              }
+          })
+        },
+        notpass(index){
+          this.notpass1.projectId = this.data[index].projectId
+          this.notpass1.trainingId = this.data[index].trainingId
+          axios.put(url+'jiaowu',this.notpass1)
+          .then(res=>{
+            if(res.data.success)
+              {
+                this.$Message.success(res.data.message);
+                this.reload();//刷新页面
+              }
+              else{
+                this.$Message.error('审批出现问题');
+              }
+          })
+        },
+
         edit(index){
           this.mode = 'update';
           this.correctMes = '更新成功！';
@@ -257,7 +252,7 @@ export default {
                     console.log(res);
                     if(res.data.success)
                     {
-                      this.$Message.success(res.data.message);
+                      this.$Message.success(this.correctMes);
                       this.loading = false;//停止加载
                       this.Modal = false;//关闭对话框组件
                       this.Modal = true;
@@ -265,7 +260,7 @@ export default {
                     }
                     else{
                       this.loading = false;
-                      this.$Message.error(res.data.message);
+                      this.$Message.error('提交失败');
                     }
                   })
                 },1000)
@@ -277,7 +272,7 @@ export default {
                     console.log(res);
                     if(res.data.success)
                     {
-                      this.$Message.success(res.data.message);
+                      this.$Message.success(this.correctMes);
                       this.loading = false;//停止加载
                       this.Modal = false;//关闭对话框组件
                       this.Modal = true;
@@ -285,7 +280,7 @@ export default {
                     }
                     else{
                       this.loading = false;
-                      this.$Message.error(res.data.message);
+                      this.$Message.error('更新失败');
                     }
                   })
                   // this.loading=false
@@ -303,33 +298,11 @@ export default {
         },
         page(currentPage) {
             const _this = this
-            axios.get(url+'All/'+this.$route.params.training_id+'/'+currentPage).then(function (resp){
+            axios.get(url+'NeedDebate/'+currentPage).then(function (resp){
               console.log(resp);
               _this.data = resp.data.data.content;
               _this.total = resp.data.data.totalElements; 
             })
-        },
-
-        exportExcel() {
-            axios.get(GLOBAL.apiURL+'/stuAndpro/gradeOutput/'+this.$route.params.training_id).then(res=>{
-              this.tableData = res.data.data
-              require.ensure([], () => {
-                const { export_json_to_excel } = require("../../Excel/Export2Excel");
-                const tHeader = ["学生学号", "学生姓名", "学生5分制成绩", '学生100分制成绩'];
-                // 上面设置Excel的表格第一行的标题
-                const filterVal = ["studentId", "studentName", "grade5",'grade100'];
-                // 上面的index、nickName、name是tableData里对象的属性
-                const list = this.tableData; //把data里的tableData存到list
-                const data = this.formatJson(filterVal, list);
-                export_json_to_excel(tHeader, data, "学生成绩导出");
-              });
-              console.log(this.tableData)
-            })
-          
-        },
-
-        formatJson(filterVal, jsonData) {
-          return jsonData.map(v => filterVal.map(j => v[j]));
         }
     },
 

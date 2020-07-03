@@ -112,8 +112,6 @@ export default {
       }
     },
     created(){
-      console.log(this)
-
       const _this = this;
       //获取当前下的公告
       axios.get(url+this.$route.params.projectId+'/1').then(function (resp){

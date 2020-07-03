@@ -58,25 +58,16 @@
               </Submenu>
               <Submenu name="3">
                 <template slot="title">
-                  <Icon type="ios-analytics"></Icon>
-                  <span>公告通知</span>
-                </template>
-                <MenuItem name="3-1" to="/teacher/notice">
-                  <span>公告管理</span>
-                </MenuItem>
-              </Submenu>
-              <Submenu name="4">
-                <template slot="title">
                   <Icon type="ios-paper"></Icon>
                   <span>项目监督</span>
                 </template>
-                <MenuItem name="4-1" to="/teacher/project">
+                <MenuItem name="3-1" to="/teacher/project">
                   <span>项目列表</span>
                 </MenuItem>
-                <MenuItem name="4-2" to="/teacher/student">
+                <MenuItem name="3-2" to="/teacher/student">
                   <span>学生列表</span>
                 </MenuItem>
-                <MenuItem name="4-3" to="/teacher/check">
+                <MenuItem name="3-3" to="/teacher/check">
                   <span>项目审核</span>
                 </MenuItem>
               </Submenu>
@@ -244,6 +235,7 @@ export default {
     axios.get(GLOBAL.apiURL+'teacher/One/'+this.$options.methods.getCookie('id'))
     .then(res=>{
       this.Info=res.data.data
+      console.log(this.Info)
     })
     if (this.$route.meta && this.$route.meta.order) {
       this.activeName = this.$route.meta.order;

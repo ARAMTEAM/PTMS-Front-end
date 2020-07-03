@@ -12,7 +12,7 @@
 
       <div class="EAManage">
         <!-- 表格内容 -->
-        <Table stripe  border  highlight-row ref="currentRowTable" :columns="header" :data="data">
+        <Table :loading="tablelaoding" stripe  border  highlight-row ref="currentRowTable" :columns="header" :data="data">
           <template slot-scope="{ row }" slot="name">
               <strong>{{ row.name }}</strong>
           </template>
@@ -76,10 +76,16 @@
 import GLOBAL from '@/api/global_variable'
 const url = GLOBAL.apiURL+'project/';
 export default {
-
+    props:{
+      Info: {
+        type:Object,
+        required:true
+        }
+    },
     inject:['reload'],
     data(){
       return {
+        tablelaoding:true,
         loading:false,//表单的loadiing状态
         Modal:false,
         Modal1:false,
@@ -162,16 +168,13 @@ export default {
     },
     created(){
       const _this = this;
-      axios.get(GLOBAL.apiURL+'teacher/One/'+this.$options.methods.getCookie('id'))
-      .then(res=>{
-        this.Info=res.data.data
-          axios.get(url+'teacher/all/'+this.Info.teacherId+'/1').then(function (resp){
+      console.log(this.Info)
+      axios.get(url+'teacher/all/'+this.Info.teacherId+'/1').then(function (resp){
           console.log(resp);
           _this.data = resp.data.data.content;
           _this.total = resp.data.data.totalElements; 
-        })
+          _this.tablelaoding = false;
       })
-
       
     },
     methods: {

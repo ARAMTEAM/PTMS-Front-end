@@ -2,7 +2,7 @@
   <div class="Container">
     <h1>查看日志界面</h1>
     <div class="LogForm">
-        <i-table size="large" :columns="columns1" :data="data1"></i-table>
+        <Table :loading="tableloading" :columns="columns" :data="data"></Table>
     </div>
     <br/>
         <!-- 分页 -->
@@ -13,69 +13,68 @@
 </template>
 
 <script>
+import GLOBAL from '@/api/global_variable'
+const url = GLOBAL.apiURL
+import moment from 'moment'
 export default {
 data () {
     return {
         total: null,
+        tableloading:true,
         data:[],
-        columns1: [
-            {
-                type: 'index',
-                width: 60,
-                align: 'center'
-            },
-            {
-                title: '日志编号',
-                key: 'log_id',
-                width: 200,
-            },
-            {
-                title: '记录时间',
-                key: 'time',
-                width: 250,
-            },
-            {
-                title: '日志内容',
-                key: 'log_content'
-            }
-        ],
-        data1: [
-            {
-                log_id: '王小明',
-                time: '2020-02-03 20:25:14',
-                log_content: '北京市朝阳区芍药居哪哈的反馈你不快乐决胜巅峰版纳可接受的的奥术大师发的说法啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊'
-            },
-            {
-                log_id: '张小刚',
-                time: '2020-02-03 20:25:14',
-                log_content: '北京市海淀区西二旗'
-            },
-            {
-                log_id: '李小红',
-                time: '2020-02-03 20:25:14',
-                log_content: '上海市浦东新区世纪大道'
-            },
-            {
-                log_id: '周小伟',
-                time: '2020-02-03 20:25:14',
-                log_content: '深圳市南山区深南大道'
-            }
-        ]
+        columns: [
+                    {
+                        type: 'index',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
+                        title: '登录账户',
+                        key: 'userId',
+                        align: 'center'
+                    },
+                    {
+                        title: '用户类型',
+                        key: 'userType',
+                        align: 'center'
+                    },
+                    {
+                        title: '登录IP',
+                        key: 'ip',
+                        align: 'center'
+
+                    },
+                    {
+                        title: '进行操作',
+                        key: 'operation',
+                        align: 'center'
+                    },
+                    {
+                        title: '登陆时间',
+                        key: 'time',
+                        align: 'center',
+                        render: (h, params) => {
+                            let time = moment(params.row.time).format('YYYY-MM-DD HH:mm:ss')
+                            return h('div', time);
+                        }
+                    },
+                ],
+    
     }
   },
     created(){
         const _this = this;
-        axios.get(url+'1').then(function (resp){
+        axios.get(url+'slogs/1').then(function (resp){
             console.log(resp);
             _this.data = resp.data.data.content;
             _this.total = resp.data.data.totalElements; 
-            _this.tableLoading = false//表格加载成功
+            _this.tableloading = false//表格加载成功
         })
     },
     methods: {
         page(currentPage) {
             const _this = this
-            axios.get(url+currentPage,
+            axios.get(url+'slogs/'+currentPage,
             ).then(function (resp){
             console.log(resp);
             _this.data = resp.data.data.content;

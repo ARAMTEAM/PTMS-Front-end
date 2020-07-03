@@ -5,14 +5,15 @@
   
         <div class="EAManage">
           <!-- 表格内容 -->
-          <Table stripe  border  highlight-row ref="currentRowTable" :columns="header" :data="data">
+          <Table :loading="tableloading" stripe  border  highlight-row ref="currentRowTable" :columns="header" :data="data">
             <template slot-scope="{ row }" slot="name">
                 <strong>{{ row.name }}</strong>
             </template>
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" @click="show(index)">查看</Button>
-                <Button type="warning" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
-                <Button type="error" size="small" @click="remove(index)">删除</Button>
+                <Button type="success" size="small" style="margin-right: 5px" @click="pass(index)">通过</Button>
+                <Button type="warning" size="small" style="margin-right: 5px" @click="debate(index)">待答辩</Button>
+                <Button type="error" size="small" style="margin-right: 5px" @click="notpass(index)">不通过</Button>
             </template>
           </Table>
           <!-- 用于更新和增加教师项目的表单 -->
@@ -90,6 +91,7 @@
       components:{Notice},
       data(){
         return {
+          tableloading:true,
           loading:false,//表单的loadiing状态
           Modal:false,
           Modal1:false,
@@ -140,9 +142,9 @@
                 align: 'center'
             }
           ],
-          formItem: { projectStatus:'需答辩'},
-          formItem1: { projectStatus:'不通过'},
-          formItem2: { projectStatus:'通过'},
+          debate1: { projectId:null,trainingId:null,projectStatus:'需答辩'},
+          notpass1: { projectId:null,trainingId:null, projectStatus:'不通过'},
+          pass1: {  projectId:null,trainingId:null,projectStatus:'通过'},
         }
       },
       created(){
@@ -151,6 +153,7 @@
           // console.log(resp);
           _this.data = resp.data.data.content;
           _this.total = resp.data.data.totalElements; 
+          _this.tableloading = false
         })
         axios.get(GLOBAL.apiURL+'teacher/All/').then(res=>{
           console.log(res);
@@ -177,8 +180,51 @@
               })
           },
           pass(index){
-            axios.put(url+'jiaowu')
-          }
+          this.pass1.projectId = this.data[index].projectId
+          this.pass1.trainingId = this.data[index].trainingId
+          axios.put(url+'jiaowu',this.pass1)
+          .then(res=>{
+            if(res.data.success)
+              {
+                this.$Message.success(res.data.message);
+                this.reload();//刷新页面
+              }
+              else{
+                this.$Message.error('审批出现问题');
+              }
+          })
+        },
+        debate(index){
+          this.debate1.projectId = this.data[index].projectId
+          this.debate1.trainingId = this.data[index].trainingId
+          axios.put(url+'jiaowu',this.debate1)
+          .then(res=>{
+            if(res.data.success)
+              {
+                this.$Message.success(res.data.message);
+                this.reload();//刷新页面
+              }
+              else{
+                this.$Message.error('审批出现问题');
+              }
+          })
+        },
+        notpass(index){
+          this.notpass1.projectId = this.data[index].projectId
+          this.notpass1.trainingId = this.data[index].trainingId
+          axios.put(url+'jiaowu',this.notpass1)
+          .then(res=>{
+            if(res.data.success)
+              {
+                this.$Message.success(res.data.message);
+                this.reload();//刷新页面
+              }
+              else{
+                this.$Message.error('审批出现问题');
+              }
+          })
+        },
+
           edit(index){
             this.mode = 'update';
             this.correctMes = '更新成功！';

@@ -1,29 +1,19 @@
-# vuestudy
+# PTMS实训管理系统前端
 
-## Project setup
-```
-yarn install
-```
+> PTMS前端采取Vue的渐进式框架与iView为组件库搭建而成
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
+运行代码
 
-### Compiles and minifies for production
-```
-yarn run build
+安装所需要的依赖包
+
+```bash
+npm install
 ```
 
-### Run your tests
-```
-yarn run test
+运行vue
+
+```bash
+npm run serve
 ```
 
-### Lints and fixes files
-```
-yarn run lint
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
