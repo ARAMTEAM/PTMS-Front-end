@@ -10,7 +10,7 @@
     "core-js": "^3.6.5",
     "file-saver": "^2.0.2",
     "font-awesome": "^4.7.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "view-design": "^4.0.0",
     "vue": "^2.6.11",
     "vue-cookies": "^1.7.0",
